@@ -4,6 +4,7 @@ import (
 	"app/config"
 	"app/graphql/generated"
 	"app/graphql/resolver"
+	"app/middleware"
 	"log"
 	"net/http"
 	"os"
@@ -17,22 +18,24 @@ import (
 const defaultPort = "3000"
 
 func main() {
+	db := config.NewDB()
+	store := config.NewSessionStore(db.Connection)
 	router := chi.NewRouter()
+
 	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3001"},
+		AllowedOrigins:   []string{"http://localhost:3001", "http://localhost:3000"},
 		AllowCredentials: true,
-		AllowedMethods: []string{"GET", "POST", "PUT"},
+		AllowedMethods:   []string{"GET", "POST", "PUT"},
 		Debug:            true,
 	}).Handler)
+	router.Use(middleware.InjectHTTPMiddleware())
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	db := config.NewDB()
-
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{DB: db.Connection}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{DB: db.Connection, STORE: store}}))
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)

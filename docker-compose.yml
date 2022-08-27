@@ -12,6 +12,7 @@ services:
       DB_PASSWORD: password
       DB_HOST: db
       DB_NAME: changeable-dev
+      SECRET_HASH_KEY: YWJTIzPep2kKiYoKScdsa2tPUB31
     ports:
       - 3000:3000
     tty: true
