@@ -13,16 +13,18 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	uc usecase.UsersUsecase
+	UsecaseUsers usecase.UsersUsecase
 }
 
 func NewResolver(db database.DB, store *gormstore.Store) *Resolver {
 	sss := service.NewSessionStoreService(store)
+	cs := &service.CyptoService{}
 
 	return &Resolver{
-		uc: usecase.UsersUsecase{
-			UsersRepo: &database.UsersRepository{DB: db},
-			SSService: sss,
+		UsecaseUsers: usecase.UsersUsecase{
+			UsersRepo:     &database.UsersRepository{DB: db},
+			SSService:     sss,
+			CryptoService: cs,
 		},
 	}
 }
