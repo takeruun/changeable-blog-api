@@ -11,17 +11,18 @@ import (
 )
 
 type UsersUsecase struct {
-	UsersRepo repository.UsersRepository
-	SSService service.SessionStoreServiceRepository
+	UsersRepo     repository.UsersRepository
+	SSService     service.SessionStoreServiceRepository
+	CryptoService service.CyptoServiceRepository
 }
 
 func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (user *model.User, err error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
+	hashPwd, err := usecase.CryptoService.HashAndSalt([]byte(params.Password))
 	if err != nil {
 		return nil, err
 	}
 
-	params.Password = string(hash)
+	params.Password = hashPwd
 	userParams := entity.ToEntityUser(params)
 
 	newUser, err := usecase.UsersRepo.Create(userParams)
@@ -29,11 +30,7 @@ func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (
 		return nil, err
 	}
 
-	session, _ := usecase.SSService.GetSession(ctx, "session")
-
-	session.Values["userId"] = newUser.ID
-
-	usecase.SSService.SaveSession(ctx, session)
+	usecase.SSService.SaveValue(ctx, "userId", newUser.ID)
 
 	return entity.ToModelUser(newUser), nil
 }
