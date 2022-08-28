@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -18,6 +19,7 @@ import (
 const defaultPort = "3000"
 
 func main() {
+	time.Local = time.FixedZone("JST", 9*60*60)
 	db := config.NewDB()
 	store := config.NewSessionStore(db.Connection)
 	router := chi.NewRouter()
