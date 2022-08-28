@@ -6,6 +6,8 @@ import (
 	"app/service"
 	"app/usecase/repository"
 	"context"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UsersUsecase struct {
@@ -14,6 +16,12 @@ type UsersUsecase struct {
 }
 
 func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (user *model.User, err error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+
+	params.Password = string(hash)
 	userParams := entity.ToEntityUser(params)
 
 	newUser, err := usecase.UsersRepo.Create(userParams)
@@ -31,7 +39,13 @@ func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (
 }
 
 func (usecase *UsersUsecase) Login(params *model.Login, ctx context.Context) (user *model.User, err error) {
+
 	loginUser, err := usecase.UsersRepo.FindByEmail(params.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(loginUser.Password), []byte(params.Password))
 	if err != nil {
 		return nil, err
 	}
