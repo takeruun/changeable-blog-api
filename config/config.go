@@ -16,6 +16,11 @@ type Config struct {
 	Routing struct {
 		Port string
 	}
+	SESSION_STORE struct {
+		Production struct {
+			SecretHashKey string
+		}
+	}
 }
 
 func NewConfig() *Config {
@@ -25,6 +30,8 @@ func NewConfig() *Config {
 	c.DB.Production.Username = os.Getenv("DB_USER")
 	c.DB.Production.Password = os.Getenv("DB_PASSWORD")
 	c.DB.Production.DBName = os.Getenv("DB_NAME")
+
+	c.SESSION_STORE.Production.SecretHashKey = os.Getenv("SECRET_HASH_KEY")
 
 	c.Routing.Port = "3000"
 
