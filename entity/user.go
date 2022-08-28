@@ -31,5 +31,6 @@ func ToModelUser(u *User) *model.User {
 		ID:         strconv.Itoa(int(u.ID)),
 		Name:       u.Name,
 		PostalCode: u.PostalCode,
+		CreatedAt:  u.CreatedAt.String(),
 	}
 }
