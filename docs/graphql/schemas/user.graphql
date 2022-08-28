@@ -5,6 +5,11 @@ input SignUp {
   postalCode: String!
 }
 
+input Login {
+  email: String!
+  password: String!
+}
+
 type User {
   id: String!
   name: String!
@@ -14,4 +19,9 @@ type User {
 
 extend type Mutation {
   signUp(input: SignUp!): User!
+  login(input: Login!): User!
+}
+
+extend type Query {
+  getMyUser: User!
 }
