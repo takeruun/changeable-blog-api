@@ -12,7 +12,7 @@ import (
 
 type UsersUsecase struct {
 	UsersRepo repository.UsersRepository
-	SSService service.SessionStoreService
+	SSService service.SessionStoreServiceRepository
 }
 
 func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (user *model.User, err error) {

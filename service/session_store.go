@@ -8,17 +8,17 @@ import (
 	"github.com/wader/gormstore/v2"
 )
 
-type SessionStoreService interface {
+type SessionStoreServiceRepository interface {
 	GetSession(ctx context.Context, name string) (*sessions.Session, error)
 	SaveSession(ctx context.Context, session *sessions.Session) error
 }
 
-type sessionStoreService struct {
+type SessionStoreService struct {
 	store *gormstore.Store
 }
 
-func NewSessionStoreService(s *gormstore.Store) SessionStoreService {
-	return &sessionStoreService{
+func NewSessionStoreService(s *gormstore.Store) SessionStoreServiceRepository {
+	return &SessionStoreService{
 		store: s,
 	}
 }
@@ -33,7 +33,7 @@ type HTTP struct {
 }
 
 // GetSession returns a cached session of the given name
-func (service *sessionStoreService) GetSession(ctx context.Context, name string) (*sessions.Session, error) {
+func (service *SessionStoreService) GetSession(ctx context.Context, name string) (*sessions.Session, error) {
 	httpContext := ctx.Value(HTTPKey("http")).(HTTP)
 
 	// Ignore err because a session is always returned even if one doesn't exist
@@ -46,7 +46,7 @@ func (service *sessionStoreService) GetSession(ctx context.Context, name string)
 }
 
 // SaveSession saves the session by writing it to the response
-func (service *sessionStoreService) SaveSession(ctx context.Context, session *sessions.Session) error {
+func (service *SessionStoreService) SaveSession(ctx context.Context, session *sessions.Session) error {
 	httpContext := ctx.Value(HTTPKey("http")).(HTTP)
 
 	err := service.store.Save(httpContext.R, *httpContext.W, session)
