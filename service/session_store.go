@@ -11,6 +11,8 @@ import (
 type SessionStoreServiceRepository interface {
 	GetSession(ctx context.Context, name string) (*sessions.Session, error)
 	SaveSession(ctx context.Context, session *sessions.Session) error
+	GetValue(ctx context.Context, key string) (interface{}, error)
+	SaveValue(ctx context.Context, key string, value interface{}) error
 }
 
 type SessionStoreService struct {
@@ -52,4 +54,29 @@ func (service *SessionStoreService) SaveSession(ctx context.Context, session *se
 	err := service.store.Save(httpContext.R, *httpContext.W, session)
 
 	return err
+}
+
+func (service *SessionStoreService) GetValue(ctx context.Context, key string) (interface{}, error) {
+	session, err := service.GetSession(ctx, "session")
+	if err != nil {
+		return "", err
+	}
+
+	return session.Values[key], nil
+}
+
+func (service *SessionStoreService) SaveValue(ctx context.Context, key string, value interface{}) error {
+	session, err := service.GetSession(ctx, "session")
+	if err != nil {
+		return err
+	}
+
+	session.Values[key] = value
+
+	err = service.SaveSession(ctx, session)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
