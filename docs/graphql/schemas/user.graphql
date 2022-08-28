@@ -5,11 +5,13 @@ input SignUp {
   postalCode: String!
 }
 
-type LoginUser {
+type User {
   id: String!
   name: String!
+  postalCode: String!
+  createdAt: String!
 }
 
 extend type Mutation {
-  signUp(input: SignUp!): LoginUser!
+  signUp(input: SignUp!): User!
 }

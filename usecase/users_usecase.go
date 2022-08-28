@@ -13,19 +13,19 @@ type UsersUsecase struct {
 	SSService service.SessionStoreService
 }
 
-func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (loginUser *model.LoginUser, err error) {
+func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (user *model.User, err error) {
 	userParams := entity.ToEntityUser(params)
 
-	user, err := usecase.UsersRepo.Create(userParams)
+	newUser, err := usecase.UsersRepo.Create(userParams)
 	if err != nil {
 		return nil, err
 	}
 
 	session, _ := usecase.SSService.GetSession(ctx, "session")
 
-	session.Values["userId"] = user.ID
+	session.Values["userId"] = newUser.ID
 
 	usecase.SSService.SaveSession(ctx, session)
 
-	return entity.ToModelLoginUser(user), nil
+	return entity.ToModelUser(newUser), nil
 }
