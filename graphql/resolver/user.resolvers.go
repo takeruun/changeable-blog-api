@@ -10,21 +10,21 @@ import (
 
 // SignUp is the resolver for the signUp field.
 func (r *mutationResolver) SignUp(ctx context.Context, input model.SignUp) (*model.User, error) {
-	user, _ := r.uc.SignUp(&input, ctx)
+	user, err := r.uc.SignUp(&input, ctx)
 
-	return user, nil
+	return user, err
 }
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (*model.User, error) {
-	user, _ := r.uc.Login(&input, ctx)
+	user, err := r.uc.Login(&input, ctx)
 
-	return user, nil
+	return user, err
 }
 
 // GetMyUser is the resolver for the getMyUser field.
 func (r *queryResolver) GetMyUser(ctx context.Context) (*model.User, error) {
-	user, _ := r.uc.GetMyUser(ctx)
+	user, err := r.uc.GetMyUser(ctx)
 
-	return user, nil
+	return user, err
 }
