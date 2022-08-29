@@ -8,34 +8,17 @@ on:
   pull_request:
 
 jobs:
-  setup:
-    name: set up
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
-        with:
-          go-version: '1.18.4'
-      - uses: actions/cache@v2
-        id: cache-go
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
   go_test:
-    needs: setup
     name: Backend Api Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: ./github/actions/setup-go
       - name: Run test
         run: |
           go test ./test/* -test.v
-  go_fmt:
-    needs: setup
+  go_fmt:  
     name: Go format
     runs-on: ubuntu-latest
     steps:
@@ -47,6 +30,8 @@ jobs:
           PATTERNS: |
             **/*
             !front/**/*
+      - uses: ./github/actions/setup-go
+        if: steps.check-diff.outputs.diff
       - name: Run gofmt
         run: gofmt -l -s -w .
         if: steps.check-diff.outputs.diff
