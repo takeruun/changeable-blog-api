@@ -35,7 +35,7 @@ jobs:
         run: |
           go test ./test/* -test.v
   go_fmt:
-    needs: setups
+    needs: setup
     name: Go format
     runs-on: ubuntu-latest
     steps:
