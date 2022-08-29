@@ -5,7 +5,6 @@ import (
 )
 
 type Config struct {
-	
 	DB struct {
 		Production struct {
 			Host     string
