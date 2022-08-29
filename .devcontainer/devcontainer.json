@@ -21,6 +21,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "go.useLanguageServer": true,
     "[go]": {
+      "editor.defaultFormatter": "golang.go",
       "editor.snippetSuggestions": "none",
       "editor.formatOnSave": true,
       "editor.codeActionsOnSave": {
