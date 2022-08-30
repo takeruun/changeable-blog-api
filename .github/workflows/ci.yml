@@ -2,23 +2,12 @@ name: ci
 
 on:
   push:
-    branches:
-      - develop
+    branches-ignore:
       - main
-  pull_request:
+      - develop
 
 jobs:
-  go_test:
-    name: Backend Api Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: ./.github/actions/setup-go
-      - name: Run test
-        run: |
-          go test ./test/* -test.v
-  go_fmt:  
+  go-fmt:
     name: Go format
     runs-on: ubuntu-latest
     steps:
@@ -38,3 +27,14 @@ jobs:
       - name: Check failure
         run: exit 1
         if: steps.check-diff.outputs.diff
+
+  go-test:
+    name: Backend Api Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-go
+      - name: Run test
+        run: |
+          go test ./test/* -test.v
