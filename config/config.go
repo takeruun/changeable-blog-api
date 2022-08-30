@@ -6,32 +6,29 @@ import (
 
 type Config struct {
 	DB struct {
-		Production struct {
-			Host     string
-			Username string
-			Password string
-			DBName   string
-		}
+		Host     string
+		Username string
+		Password string
+		DBName   string
 	}
+
 	Routing struct {
 		Port string
 	}
 	SESSION_STORE struct {
-		Production struct {
-			SecretHashKey string
-		}
+		SecretHashKey string
 	}
 }
 
 func NewConfig() *Config {
 	c := new(Config)
 
-	c.DB.Production.Host = os.Getenv("DB_HOST")
-	c.DB.Production.Username = os.Getenv("DB_USER")
-	c.DB.Production.Password = os.Getenv("DB_PASSWORD")
-	c.DB.Production.DBName = os.Getenv("DB_NAME")
+	c.DB.Host = os.Getenv("DB_HOST")
+	c.DB.Username = os.Getenv("DB_USER")
+	c.DB.Password = os.Getenv("DB_PASSWORD")
+	c.DB.DBName = os.Getenv("DB_NAME")
 
-	c.SESSION_STORE.Production.SecretHashKey = os.Getenv("SECRET_HASH_KEY")
+	c.SESSION_STORE.SecretHashKey = os.Getenv("SECRET_HASH_KEY")
 
 	c.Routing.Port = "3000"
 
