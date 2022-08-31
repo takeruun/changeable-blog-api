@@ -23,10 +23,11 @@ jobs:
         if: steps.check-diff.outputs.diff
       - name: Run gofmt
         run: gofmt -l -s -w .
+        id: fmt-diff
         if: steps.check-diff.outputs.diff
       - name: Check failure
         run: exit 1
-        if: steps.check-diff.outputs.diff
+        if: steps.fmt-diff.outputs.diff
 
   go-test:
     name: Backend Api Test
