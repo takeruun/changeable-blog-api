@@ -38,4 +38,4 @@ jobs:
       - uses: ./.github/actions/setup-go
       - name: Run test
         run: |
-          go test ./test/* -test.v
+          go test ./test/... -test.v
