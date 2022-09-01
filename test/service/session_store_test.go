@@ -1,4 +1,4 @@
-package mock_service
+package service
 
 import "testing"
 
