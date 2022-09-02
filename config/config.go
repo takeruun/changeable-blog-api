@@ -23,10 +23,21 @@ type Config struct {
 func NewConfig() *Config {
 	c := new(Config)
 
+	goMode := os.Getenv("GO_MODE")
+	switch goMode {
+	case "development":
+		c.DB.DBName = os.Getenv("DB_NAME") + "-dev"
+	case "test":
+		c.DB.DBName = os.Getenv("DB_NAME") + "-test"
+	case "prodcution":
+		c.DB.DBName = os.Getenv("DB_NAME")
+	default:
+		c.DB.DBName = os.Getenv("DB_NAME") + "-dev"
+	}
+
 	c.DB.Host = os.Getenv("DB_HOST")
 	c.DB.Username = os.Getenv("DB_USER")
 	c.DB.Password = os.Getenv("DB_PASSWORD")
-	c.DB.DBName = os.Getenv("DB_NAME")
 
 	c.SESSION_STORE.SecretHashKey = os.Getenv("SECRET_HASH_KEY")
 
