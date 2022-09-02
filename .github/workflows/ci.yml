@@ -76,4 +76,5 @@ jobs:
               ]
             }
         env:
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
