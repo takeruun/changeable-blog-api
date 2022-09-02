@@ -43,6 +43,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: ./.github/actions/setup-go
+      - name: Set DB
+        run: mysql -uroot -ppassword -h 127.0.0.1 -e "CREATE DATABASE changeable-test;"
       - name: Run test
         env:
           GO_MODE: test
