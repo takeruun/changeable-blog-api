@@ -16,8 +16,7 @@ runs:
             "attachments": [
               {
                 "color": "good",
-                "text": "GitHub Action CI success \n 
-                        PR: ${{ github.event.pull_request.html_url }}",
+                "text": "GitHub Action CI success \nPR: ${{ github.event.pull_request.html_url }}",
               }
             ],
             
@@ -34,9 +33,7 @@ runs:
             "attachments": [
               {
                 "color": "danger",
-                "text": "GitHub Action CI failuer \n 
-                        PR: ${{ github.event.pull_request.html_url }} \n
-                        head commit: ${{ github.event.head_commit.url }}",
+                "text": "GitHub Action CI failuer \nPR: ${{ github.event.pull_request.html_url }} \nhead commit: ${{ github.event.head_commit.url }}",
               }
             ],
             
