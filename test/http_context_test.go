@@ -3,8 +3,7 @@ package test
 import (
 	"app/middleware"
 	"app/service"
-	"io"
-	"io/ioutil"
+	"app/test/test_utils"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -43,28 +42,5 @@ func TestHttpContext(t *testing.T) {
 
 	defer ts.Close()
 
-	testRequest(t, ts, "GET", "/", nil)
-}
-
-func testRequest(t *testing.T, ts *httptest.Server, method, path string, body io.Reader) (*http.Response, string) {
-	req, err := http.NewRequest(method, ts.URL+path, body)
-	if err != nil {
-		t.Fatal(err)
-		return nil, ""
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatal(err)
-		return nil, ""
-	}
-
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-		return nil, ""
-	}
-	defer resp.Body.Close()
-
-	return resp, string(respBody)
+	test_utils.TestRequest(t, ts, "GET", "/", nil)
 }
