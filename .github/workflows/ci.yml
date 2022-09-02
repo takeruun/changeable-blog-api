@@ -56,3 +56,5 @@ jobs:
         run: |
           go test ./test/... -test.v
       - uses: ./.github/actions/notify-for-slack
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
