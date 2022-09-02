@@ -18,8 +18,7 @@ runs:
                 "color": "good",
                 "text": "CI Result Success :white_check_mark: \nPR: ${{ github.event.pull_request.html_url }}"
               }
-            ],
-            
+            ]
           }
       env:
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
@@ -35,8 +34,7 @@ runs:
                 "color": "danger",
                 "text": "CI Failuer :x: \nPR: ${{ github.event.pull_request.html_url }} \nhead commit: ${{ github.event.head_commit.url }}"
               }
-            ],
-            
+            ]
           }
       env:
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
