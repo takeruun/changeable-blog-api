@@ -32,10 +32,24 @@ jobs:
   go-test:
     name: Backend Api Test
     runs-on: ubuntu-latest
+    services:
+      db:
+        image: mysql:8.0.28
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: ./.github/actions/setup-go
       - name: Run test
+        env:
+          GO_MODE: test
+          DB_USER: root
+          DB_PASSWORD: password
+          DB_HOST: db
+          DB_NAME: changeable
+          SECRET_HASH_KEY: welkfaIEeifne212iiID
         run: |
           go test ./test/... -test.v
