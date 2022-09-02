@@ -48,7 +48,7 @@ jobs:
           GO_MODE: test
           DB_USER: root
           DB_PASSWORD: password
-          DB_HOST: db
+          DB_HOST: 127.0.0.1
           DB_NAME: changeable
           SECRET_HASH_KEY: welkfaIEeifne212iiID
         run: |
