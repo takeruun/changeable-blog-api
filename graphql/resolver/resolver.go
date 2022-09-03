@@ -2,8 +2,8 @@ package resolver
 
 import (
 	"app/database"
+	"app/interactor"
 	"app/service"
-	"app/usecase"
 
 	"github.com/wader/gormstore/v2"
 )
@@ -13,7 +13,7 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	UsecaseUsers usecase.UsersUsecase
+	UsersInteractor interactor.UsersInteractor
 }
 
 func NewResolver(db database.DB, store *gormstore.Store) *Resolver {
@@ -21,7 +21,7 @@ func NewResolver(db database.DB, store *gormstore.Store) *Resolver {
 	cs := &service.CyptoService{}
 
 	return &Resolver{
-		UsecaseUsers: usecase.UsersUsecase{
+		UsersInteractor: interactor.UsersInteractor{
 			UsersRepo:     &database.UsersRepository{DB: db},
 			SSService:     sss,
 			CryptoService: cs,

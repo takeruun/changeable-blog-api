@@ -1,22 +1,22 @@
-package usecase
+package interactor
 
 import (
 	"app/entity"
 	"app/graphql/model"
+	"app/interactor/repository"
 	"app/service"
-	"app/usecase/repository"
 	"context"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UsersUsecase struct {
+type UsersInteractor struct {
 	UsersRepo     repository.UsersRepository
 	SSService     service.SessionStoreServiceRepository
 	CryptoService service.CyptoServiceRepository
 }
 
-func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (user *model.User, err error) {
+func (usecase *UsersInteractor) SignUp(params *model.SignUp, ctx context.Context) (user *model.User, err error) {
 	hashPwd, err := usecase.CryptoService.HashAndSalt([]byte(params.Password))
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func (usecase *UsersUsecase) SignUp(params *model.SignUp, ctx context.Context) (
 	return entity.ToModelUser(newUser), nil
 }
 
-func (usecase *UsersUsecase) Login(params *model.Login, ctx context.Context) (user *model.User, err error) {
+func (usecase *UsersInteractor) Login(params *model.Login, ctx context.Context) (user *model.User, err error) {
 
 	loginUser, err := usecase.UsersRepo.FindByEmail(params.Email)
 	if err != nil {
@@ -56,7 +56,7 @@ func (usecase *UsersUsecase) Login(params *model.Login, ctx context.Context) (us
 	return entity.ToModelUser(loginUser), nil
 }
 
-func (usecase *UsersUsecase) GetMyUser(ctx context.Context) (user *model.User, err error) {
+func (usecase *UsersInteractor) GetMyUser(ctx context.Context) (user *model.User, err error) {
 	session, _ := usecase.SSService.GetSession(ctx, "session")
 
 	userId := session.Values["userId"].(uint64)

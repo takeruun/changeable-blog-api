@@ -5,8 +5,8 @@ import (
 	"app/graphql/generated"
 	"app/graphql/model"
 	"app/graphql/resolver"
+	"app/interactor"
 	"app/test/mock_service"
-	"app/usecase"
 	"strconv"
 	"testing"
 
@@ -29,13 +29,13 @@ func setUp(t *testing.T) func() {
 	mockSessionStoreService = mock_service.NewMockSessionStoreServiceRepository(ctrl)
 	mockCyptroService = mock_service.NewMockCyptoServiceRepository(ctrl)
 
-	usecase := usecase.UsersUsecase{
+	usecase := interactor.UsersInteractor{
 		UsersRepo:     mockUsersRepository,
 		SSService:     mockSessionStoreService,
 		CryptoService: mockCyptroService,
 	}
 
-	resolvers = resolver.Resolver{UsecaseUsers: usecase}
+	resolvers = resolver.Resolver{UsersInteractor: usecase}
 
 	return func() {
 		defer ctrl.Finish()
