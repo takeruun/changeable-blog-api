@@ -14,7 +14,7 @@ type SESSION_STORE struct {
 func NewSessionStore(db *gorm.DB) *gormstore.Store {
 	c := NewConfig()
 	return newSessionStore(db, &SESSION_STORE{
-		SECRET_HASH_KEY: c.SESSION_STORE.Production.SecretHashKey,
+		SECRET_HASH_KEY: c.SESSION_STORE.SecretHashKey,
 	})
 }
 

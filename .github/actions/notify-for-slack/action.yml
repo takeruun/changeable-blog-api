@@ -1,0 +1,43 @@
+name: Notify for slack
+
+inputs:
+  SLACK_WEBHOOK_URL:
+    description: Slack webhook url
+
+runs:
+  using: "composite"
+  steps:
+    - name: Notify success CI
+      if: success()
+      uses: slackapi/slack-github-action@v1.21.0
+      with:
+        payload: |
+          {
+            "attachments": [
+              {
+                "color": "good",
+                "title": "${{ github.event.pull_request.title }} #${{ github.event.number }}",
+                "text": "CI Result Success :white_check_mark: \nPR: ${{ github.event.pull_request.html_url }}"
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        SLACK_WEBHOOK_URL: ${{ inputs.SLACK_WEBHOOK_URL }}
+    - name: Notify failuer CI
+      if: failure()
+      uses: slackapi/slack-github-action@v1.21.0
+      with:
+        payload: |
+          {
+            "attachments": [
+              {
+                "color": "danger",
+                "title": "${{ github.event.pull_request.title }} #${{ github.event.number }}",
+                "text": "CI Failuer :x: \nPR: ${{ github.event.pull_request.html_url }} \nhead commit: ${{ github.event.head_commit.url }}"
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        SLACK_WEBHOOK_URL: ${{ inputs.SLACK_WEBHOOK_URL }}
