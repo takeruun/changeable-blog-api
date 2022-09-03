@@ -1,0 +1,18 @@
+
+-- +migrate Up
+CREATE TABLE IF NOT EXISTS blogs (
+  id bigint(20) AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  description VARCHAR(255),
+  body VARCHAR(255) NOT NULL,
+  night_body VARCHAR(255) NOT NULL,
+  mobile_body VARCHAR(255),
+  thumbnail_image_path VARCHAR(255),
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+-- +migrate Down
+DROP TABLE IF EXISTS blogs;
