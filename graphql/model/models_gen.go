@@ -2,6 +2,13 @@
 
 package model
 
+type BlogList struct {
+	ID                 string   `json:"id"`
+	Title              string   `json:"title"`
+	ThumbnailImagePath string   `json:"thumbnailImagePath"`
+	Tags               []string `json:"tags"`
+}
+
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

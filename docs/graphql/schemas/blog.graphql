@@ -1,0 +1,10 @@
+type BlogList {
+  id: String!
+  title: String!
+  thumbnailImagePath: String!
+  tags: [String!]!
+}
+
+extend type Query {
+  blogList: [BlogList!]!
+}
