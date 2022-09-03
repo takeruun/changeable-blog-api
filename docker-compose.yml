@@ -8,10 +8,11 @@ services:
       - .:/go/src/app:cached
     command: air -c .air.toml
     environment:
+      GO_MODE: development
       DB_USER: root
       DB_PASSWORD: password
       DB_HOST: db
-      DB_NAME: changeable-dev
+      DB_NAME: changeable
       SECRET_HASH_KEY: YWJTIzPep2kKiYoKScdsa2tPUB31
     ports:
       - 3000:3000
