@@ -8,7 +8,7 @@ runs:
   using: "composite"
   steps:
     - name: Notify success CI
-      if: ${{ job.status }} == 'success'
+      if: success()
       uses: slackapi/slack-github-action@v1.21.0
       with:
         payload: |
@@ -16,7 +16,9 @@ runs:
             "attachments": [
               {
                 "color": "good",
-                "text": "CI Result Success :white_check_mark: \nPR: ${{ github.event.pull_request.html_url }}"
+                "title": "${{ github.event.pull_request.title }} #${{ github.event.number }}",
+                "text": "CI Result Success :white_check_mark: \n
+                PR: ${{ github.event.pull_request.html_url }}"
               }
             ]
           }
@@ -24,7 +26,7 @@ runs:
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
         SLACK_WEBHOOK_URL: ${{ inputs.SLACK_WEBHOOK_URL }}
     - name: Notify failuer CI
-      if: ${{ job.status }} == 'failuer'
+      if: failure()
       uses: slackapi/slack-github-action@v1.21.0
       with:
         payload: |
@@ -32,7 +34,10 @@ runs:
             "attachments": [
               {
                 "color": "danger",
-                "text": "CI Failuer :x: \nPR: ${{ github.event.pull_request.html_url }} \nhead commit: ${{ github.event.head_commit.url }}"
+                "title": "${{ github.event.pull_request.title }} #${{ github.event.number }}",
+                "text": "CI Failuer :x: \n
+                PR: ${{ github.event.pull_request.html_url }} \n
+                head commit: ${{ github.event.head_commit.url }}"
               }
             ]
           }
