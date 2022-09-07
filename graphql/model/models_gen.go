@@ -9,9 +9,26 @@ type BlogList struct {
 	Tags               []string `json:"tags"`
 }
 
+type BlogListConnection struct {
+	PageInfo *PageInfo   `json:"pageInfo"`
+	Nodes    []*BlogList `json:"nodes"`
+}
+
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type PageCondition struct {
+	PageNo int     `json:"pageNo"`
+	Limit  *int    `json:"limit"`
+	Query  *string `json:"query"`
+}
+
+type PageInfo struct {
+	PageNo int `json:"pageNo"`
+	// 検索結果の全件数
+	TotalCount int `json:"totalCount"`
 }
 
 type SignUp struct {

@@ -16,8 +16,8 @@ type UsersInteractor struct {
 	CryptoService service.CyptoServiceRepository
 }
 
-func (usecase *UsersInteractor) SignUp(params *model.SignUp, ctx context.Context) (user *model.User, err error) {
-	hashPwd, err := usecase.CryptoService.HashAndSalt([]byte(params.Password))
+func (interactor *UsersInteractor) SignUp(params *model.SignUp, ctx context.Context) (user *model.User, err error) {
+	hashPwd, err := interactor.CryptoService.HashAndSalt([]byte(params.Password))
 	if err != nil {
 		return nil, err
 	}
@@ -25,19 +25,18 @@ func (usecase *UsersInteractor) SignUp(params *model.SignUp, ctx context.Context
 	params.Password = hashPwd
 	userParams := entity.ToEntityUser(params)
 
-	newUser, err := usecase.UsersRepo.Create(userParams)
+	newUser, err := interactor.UsersRepo.Create(userParams)
 	if err != nil {
 		return nil, err
 	}
 
-	usecase.SSService.SaveValue(ctx, "userId", newUser.ID)
+	interactor.SSService.SaveValue(ctx, "userId", newUser.ID)
 
 	return entity.ToModelUser(newUser), nil
 }
 
-func (usecase *UsersInteractor) Login(params *model.Login, ctx context.Context) (user *model.User, err error) {
-
-	loginUser, err := usecase.UsersRepo.FindByEmail(params.Email)
+func (interactor *UsersInteractor) Login(params *model.Login, ctx context.Context) (user *model.User, err error) {
+	loginUser, err := interactor.UsersRepo.FindByEmail(params.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -47,21 +46,21 @@ func (usecase *UsersInteractor) Login(params *model.Login, ctx context.Context) 
 		return nil, err
 	}
 
-	session, _ := usecase.SSService.GetSession(ctx, "session")
+	session, _ := interactor.SSService.GetSession(ctx, "session")
 
 	session.Values["userId"] = loginUser.ID
 
-	usecase.SSService.SaveSession(ctx, session)
+	interactor.SSService.SaveSession(ctx, session)
 
 	return entity.ToModelUser(loginUser), nil
 }
 
-func (usecase *UsersInteractor) GetMyUser(ctx context.Context) (user *model.User, err error) {
-	session, _ := usecase.SSService.GetSession(ctx, "session")
+func (interactor *UsersInteractor) GetMyUser(ctx context.Context) (user *model.User, err error) {
+	session, _ := interactor.SSService.GetSession(ctx, "session")
 
 	userId := session.Values["userId"].(uint64)
 
-	loginUser, err := usecase.UsersRepo.Find(userId)
+	loginUser, err := interactor.UsersRepo.Find(userId)
 	if err != nil {
 		return nil, err
 	}

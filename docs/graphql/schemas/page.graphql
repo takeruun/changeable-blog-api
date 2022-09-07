@@ -1,0 +1,11 @@
+type PageInfo {
+  pageNo: Int!
+  "検索結果の全件数"
+  totalCount: Int!
+}
+
+input PageCondition {
+  pageNo: Int!
+  limit: Int
+  query: String
+}

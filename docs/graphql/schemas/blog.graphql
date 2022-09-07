@@ -1,10 +1,15 @@
 type BlogList {
-  id: String!
+  id: ID!
   title: String!
   thumbnailImagePath: String!
   tags: [String!]!
 }
 
+type BlogListConnection {
+  pageInfo: PageInfo!
+  nodes: [BlogList!]!
+}
+
 extend type Query {
-  blogList: [BlogList!]!
+  blogList(input: PageCondition!): BlogListConnection!
 }

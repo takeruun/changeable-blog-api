@@ -14,6 +14,7 @@ import (
 
 type Resolver struct {
 	UsersInteractor interactor.UsersInteractor
+	BlogsInteractor interactor.BlogsInteractor
 }
 
 func NewResolver(db database.DB, store *gormstore.Store) *Resolver {
@@ -25,6 +26,9 @@ func NewResolver(db database.DB, store *gormstore.Store) *Resolver {
 			UsersRepo:     &database.UsersRepository{DB: db},
 			SSService:     sss,
 			CryptoService: cs,
+		},
+		BlogsInteractor: interactor.BlogsInteractor{
+			BlogsRepo: &database.BlogsRepository{DB: db},
 		},
 	}
 }

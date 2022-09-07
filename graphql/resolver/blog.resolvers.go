@@ -9,6 +9,11 @@ import (
 )
 
 // BlogList is the resolver for the blogList field.
-func (r *queryResolver) BlogList(ctx context.Context) ([]*model.BlogList, error) {
-	return nil, nil
+func (r *queryResolver) BlogList(ctx context.Context, input model.PageCondition) (*model.BlogListConnection, error) {
+	blogListConnection, err := r.BlogsInteractor.BlogList(&input)
+	if err != nil {
+		return nil, err
+	}
+
+	return blogListConnection, nil
 }
