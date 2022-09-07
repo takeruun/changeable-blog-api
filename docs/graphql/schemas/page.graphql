@@ -6,6 +6,6 @@ type PageInfo {
 
 input PageCondition {
   pageNo: Int!
-  limit: Int
+  limit: Int!
   query: String
 }

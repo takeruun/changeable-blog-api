@@ -13,8 +13,8 @@ func (repo *BlogsRepository) FindAll(params *model.PageCondition) (blogs []*enti
 	db := repo.DB.Connect()
 
 	err = db.Model(&entity.Blog{}).
-		Offset((params.PageNo - 1) * *params.Limit).
-		Limit(*params.Limit).
+		Offset((params.PageNo - 1) * params.Limit).
+		Limit(params.Limit).
 		Find(&blogs).
 		Error
 
