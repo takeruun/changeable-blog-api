@@ -3,12 +3,6 @@ name: Notify for slack
 inputs:
   SLACK_WEBHOOK_URL:
     description: Slack webhook url
-  PULL_REQUEST_URL:
-    description: プルリクのURL
-  PULL_REQUEST_TITLE:
-    description: プルリクのタイトル
-  PULL_REQUEST_NUMBER:
-    description: プルリクのナンバー
 
 runs:
   using: 'composite'
@@ -22,8 +16,8 @@ runs:
             "attachments": [
               {
                 "color": "good",
-                "title": "${{ inputs.PULL_REQUEST_TITLE }} #${{ inputs.PULL_REQUEST_NUMBER }}",
-                "text": "CI Result Success :white_check_mark: \nPR: ${{ inputs.PULL_REQUEST_URL }}"
+                "title": "CI Result",
+                "text": "Success :white_check_mark"
               }
             ]
           }
@@ -39,8 +33,8 @@ runs:
             "attachments": [
               {
                 "color": "danger",
-                "title": "${{ inputs.PULL_REQUEST_TITLE }} #${{ inputs.PULL_REQUEST_NUMBER }}",
-                "text": "CI Failuer :x: \nPR: ${{ inputs.PULL_REQUEST_URL }} \nhead commit: ${{ github.event.head_commit.url }}"
+                "title": "CI Result",
+                "text": "CI Failuer :x: \nhead commit: ${{ github.event.head_commit.url }}"
               }
             ]
           }
