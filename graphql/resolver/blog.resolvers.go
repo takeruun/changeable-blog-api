@@ -17,3 +17,13 @@ func (r *queryResolver) BlogList(ctx context.Context, input model.PageCondition)
 
 	return blogListConnection, nil
 }
+
+// RecommendBlogList is the resolver for the recommendBlogList field.
+func (r *queryResolver) RecommendBlogList(ctx context.Context) (*model.RecommendBlogListConnection, error) {
+	recommendBlogList, err := r.BlogsInteractor.RecommendBlogList()
+	if err != nil {
+		return nil, err
+	}
+
+	return recommendBlogList, nil
+}

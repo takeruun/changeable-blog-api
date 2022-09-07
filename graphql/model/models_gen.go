@@ -21,7 +21,7 @@ type Login struct {
 
 type PageCondition struct {
 	PageNo int     `json:"pageNo"`
-	Limit  *int    `json:"limit"`
+	Limit  int     `json:"limit"`
 	Query  *string `json:"query"`
 }
 
@@ -29,6 +29,10 @@ type PageInfo struct {
 	PageNo int `json:"pageNo"`
 	// 検索結果の全件数
 	TotalCount int `json:"totalCount"`
+}
+
+type RecommendBlogListConnection struct {
+	Nodes []*BlogList `json:"nodes"`
 }
 
 type SignUp struct {

@@ -68,9 +68,14 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		BlogList  func(childComplexity int, input model.PageCondition) int
-		Empty     func(childComplexity int) int
-		GetMyUser func(childComplexity int) int
+		BlogList          func(childComplexity int, input model.PageCondition) int
+		Empty             func(childComplexity int) int
+		GetMyUser         func(childComplexity int) int
+		RecommendBlogList func(childComplexity int) int
+	}
+
+	RecommendBlogListConnection struct {
+		Nodes func(childComplexity int) int
 	}
 
 	User struct {
@@ -89,6 +94,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Empty(ctx context.Context) (*string, error)
 	BlogList(ctx context.Context, input model.PageCondition) (*model.BlogListConnection, error)
+	RecommendBlogList(ctx context.Context) (*model.RecommendBlogListConnection, error)
 	GetMyUser(ctx context.Context) (*model.User, error)
 }
 
@@ -220,6 +226,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetMyUser(childComplexity), true
 
+	case "Query.recommendBlogList":
+		if e.complexity.Query.RecommendBlogList == nil {
+			break
+		}
+
+		return e.complexity.Query.RecommendBlogList(childComplexity), true
+
+	case "RecommendBlogListConnection.nodes":
+		if e.complexity.RecommendBlogListConnection.Nodes == nil {
+			break
+		}
+
+		return e.complexity.RecommendBlogListConnection.Nodes(childComplexity), true
+
 	case "User.createdAt":
 		if e.complexity.User.CreatedAt == nil {
 			break
@@ -339,8 +359,14 @@ type BlogListConnection {
   nodes: [BlogList!]!
 }
 
+type RecommendBlogListConnection {
+  nodes: [BlogList!]!
+}
+
+
 extend type Query {
   blogList(input: PageCondition!): BlogListConnection!
+  recommendBlogList: RecommendBlogListConnection!
 }
 `, BuiltIn: false},
 	{Name: "../../docs/graphql/schemas/page.graphql", Input: `type PageInfo {
@@ -351,7 +377,7 @@ extend type Query {
 
 input PageCondition {
   pageNo: Int!
-  limit: Int
+  limit: Int!
   query: String
 }
 `, BuiltIn: false},
@@ -1129,6 +1155,54 @@ func (ec *executionContext) fieldContext_Query_blogList(ctx context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_recommendBlogList(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_recommendBlogList(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().RecommendBlogList(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.RecommendBlogListConnection)
+	fc.Result = res
+	return ec.marshalNRecommendBlogListConnection2ᚖappᚋgraphqlᚋmodelᚐRecommendBlogListConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_recommendBlogList(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "nodes":
+				return ec.fieldContext_RecommendBlogListConnection_nodes(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type RecommendBlogListConnection", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_getMyUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_getMyUser(ctx, field)
 	if err != nil {
@@ -1307,6 +1381,60 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecommendBlogListConnection_nodes(ctx context.Context, field graphql.CollectedField, obj *model.RecommendBlogListConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RecommendBlogListConnection_nodes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Nodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.BlogList)
+	fc.Result = res
+	return ec.marshalNBlogList2ᚕᚖappᚋgraphqlᚋmodelᚐBlogListᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RecommendBlogListConnection_nodes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecommendBlogListConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_BlogList_id(ctx, field)
+			case "title":
+				return ec.fieldContext_BlogList_title(ctx, field)
+			case "thumbnailImagePath":
+				return ec.fieldContext_BlogList_thumbnailImagePath(ctx, field)
+			case "tags":
+				return ec.fieldContext_BlogList_tags(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BlogList", field.Name)
 		},
 	}
 	return fc, nil
@@ -3323,7 +3451,7 @@ func (ec *executionContext) unmarshalInputPageCondition(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
-			it.Limit, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.Limit, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3636,6 +3764,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "recommendBlogList":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_recommendBlogList(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "getMyUser":
 			field := field
 
@@ -3671,6 +3822,34 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				return ec._Query___schema(ctx, field)
 			})
 
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var recommendBlogListConnectionImplementors = []string{"RecommendBlogListConnection"}
+
+func (ec *executionContext) _RecommendBlogListConnection(ctx context.Context, sel ast.SelectionSet, obj *model.RecommendBlogListConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, recommendBlogListConnectionImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RecommendBlogListConnection")
+		case "nodes":
+
+			out.Values[i] = ec._RecommendBlogListConnection_nodes(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4182,6 +4361,20 @@ func (ec *executionContext) marshalNPageInfo2ᚖappᚋgraphqlᚋmodelᚐPageInfo
 	return ec._PageInfo(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNRecommendBlogListConnection2appᚋgraphqlᚋmodelᚐRecommendBlogListConnection(ctx context.Context, sel ast.SelectionSet, v model.RecommendBlogListConnection) graphql.Marshaler {
+	return ec._RecommendBlogListConnection(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNRecommendBlogListConnection2ᚖappᚋgraphqlᚋmodelᚐRecommendBlogListConnection(ctx context.Context, sel ast.SelectionSet, v *model.RecommendBlogListConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._RecommendBlogListConnection(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNSignUp2appᚋgraphqlᚋmodelᚐSignUp(ctx context.Context, v interface{}) (model.SignUp, error) {
 	res, err := ec.unmarshalInputSignUp(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4524,22 +4717,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	res := graphql.MarshalBoolean(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalInt(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalInt(*v)
 	return res
 }
 

@@ -10,6 +10,12 @@ type BlogListConnection {
   nodes: [BlogList!]!
 }
 
+type RecommendBlogListConnection {
+  nodes: [BlogList!]!
+}
+
+
 extend type Query {
   blogList(input: PageCondition!): BlogListConnection!
+  recommendBlogList: RecommendBlogListConnection!
 }

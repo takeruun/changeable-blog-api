@@ -34,3 +34,23 @@ func (interactor *BlogsInteractor) BlogList(params *model.PageCondition) (blogLi
 		},
 	}, nil
 }
+
+func (interactor *BlogsInteractor) RecommendBlogList() (recommendBlogList *model.RecommendBlogListConnection, err error) {
+	blogList, err := interactor.BlogsRepo.FindAll(&model.PageCondition{PageNo: 1, Limit: 5})
+	if err != nil {
+		return nil, err
+	}
+
+	var node []*model.BlogList
+	for _, blog := range blogList {
+		node = append(node, &model.BlogList{
+			ID:                 strconv.Itoa(int(blog.ID)),
+			Title:              blog.Title,
+			ThumbnailImagePath: blog.ThumbnailImagePath,
+		})
+	}
+
+	return &model.RecommendBlogListConnection{
+		Nodes: node,
+	}, nil
+}
