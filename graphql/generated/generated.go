@@ -45,6 +45,7 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	BlogList struct {
+		CreatedAt          func(childComplexity int) int
 		ID                 func(childComplexity int) int
 		Tags               func(childComplexity int) int
 		ThumbnailImagePath func(childComplexity int) int
@@ -112,6 +113,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "BlogList.createdAt":
+		if e.complexity.BlogList.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BlogList.CreatedAt(childComplexity), true
 
 	case "BlogList.id":
 		if e.complexity.BlogList.ID == nil {
@@ -352,6 +360,7 @@ type Mutation {
   title: String!
   thumbnailImagePath: String!
   tags: [String!]!
+  createdAt: String!
 }
 
 type BlogListConnection {
@@ -690,6 +699,50 @@ func (ec *executionContext) fieldContext_BlogList_tags(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _BlogList_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BlogList) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BlogList_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_BlogList_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BlogList",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _BlogListConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *model.BlogListConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BlogListConnection_pageInfo(ctx, field)
 	if err != nil {
@@ -787,6 +840,8 @@ func (ec *executionContext) fieldContext_BlogListConnection_nodes(ctx context.Co
 				return ec.fieldContext_BlogList_thumbnailImagePath(ctx, field)
 			case "tags":
 				return ec.fieldContext_BlogList_tags(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_BlogList_createdAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BlogList", field.Name)
 		},
@@ -1433,6 +1488,8 @@ func (ec *executionContext) fieldContext_RecommendBlogListConnection_nodes(ctx c
 				return ec.fieldContext_BlogList_thumbnailImagePath(ctx, field)
 			case "tags":
 				return ec.fieldContext_BlogList_tags(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_BlogList_createdAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BlogList", field.Name)
 		},
@@ -3563,6 +3620,13 @@ func (ec *executionContext) _BlogList(ctx context.Context, sel ast.SelectionSet,
 		case "tags":
 
 			out.Values[i] = ec._BlogList_tags(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdAt":
+
+			out.Values[i] = ec._BlogList_createdAt(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++

@@ -3,6 +3,7 @@ type BlogList {
   title: String!
   thumbnailImagePath: String!
   tags: [String!]!
+  createdAt: String!
 }
 
 type BlogListConnection {

@@ -7,6 +7,7 @@ type BlogList struct {
 	Title              string   `json:"title"`
 	ThumbnailImagePath string   `json:"thumbnailImagePath"`
 	Tags               []string `json:"tags"`
+	CreatedAt          string   `json:"createdAt"`
 }
 
 type BlogListConnection struct {
