@@ -20,6 +20,17 @@ type Login struct {
 	Password string `json:"password"`
 }
 
+type NormalBlog struct {
+	ID                 string   `json:"id"`
+	Title              string   `json:"title"`
+	Description        string   `json:"description"`
+	Body               string   `json:"body"`
+	ThumbnailImagePath string   `json:"thumbnailImagePath"`
+	Tags               []string `json:"tags"`
+	CreatedAt          string   `json:"createdAt"`
+	UpdateAt           string   `json:"updateAt"`
+}
+
 type PageCondition struct {
 	PageNo int     `json:"pageNo"`
 	Limit  int     `json:"limit"`

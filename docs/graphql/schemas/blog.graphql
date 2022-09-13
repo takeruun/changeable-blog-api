@@ -6,6 +6,17 @@ type BlogList {
   createdAt: String!
 }
 
+type NormalBlog {
+  id: ID!
+  title: String!
+  description: String!
+  body: String!
+  thumbnailImagePath: String!
+  tags: [String!]!
+  createdAt: String!
+  updateAt: String!
+}
+
 type BlogListConnection {
   pageInfo: PageInfo!
   nodes: [BlogList!]!
@@ -19,4 +30,5 @@ type RecommendBlogListConnection {
 extend type Query {
   blogList(input: PageCondition!): BlogListConnection!
   recommendBlogList: RecommendBlogListConnection!
+  normalBlog(id: Int!): NormalBlog!
 }

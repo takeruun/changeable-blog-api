@@ -63,6 +63,17 @@ type ComplexityRoot struct {
 		SignUp func(childComplexity int, input model.SignUp) int
 	}
 
+	NormalBlog struct {
+		Body               func(childComplexity int) int
+		CreatedAt          func(childComplexity int) int
+		Description        func(childComplexity int) int
+		ID                 func(childComplexity int) int
+		Tags               func(childComplexity int) int
+		ThumbnailImagePath func(childComplexity int) int
+		Title              func(childComplexity int) int
+		UpdateAt           func(childComplexity int) int
+	}
+
 	PageInfo struct {
 		PageNo     func(childComplexity int) int
 		TotalCount func(childComplexity int) int
@@ -72,6 +83,7 @@ type ComplexityRoot struct {
 		BlogList          func(childComplexity int, input model.PageCondition) int
 		Empty             func(childComplexity int) int
 		GetMyUser         func(childComplexity int) int
+		NormalBlog        func(childComplexity int, id int) int
 		RecommendBlogList func(childComplexity int) int
 	}
 
@@ -96,6 +108,7 @@ type QueryResolver interface {
 	Empty(ctx context.Context) (*string, error)
 	BlogList(ctx context.Context, input model.PageCondition) (*model.BlogListConnection, error)
 	RecommendBlogList(ctx context.Context) (*model.RecommendBlogListConnection, error)
+	NormalBlog(ctx context.Context, id int) (*model.NormalBlog, error)
 	GetMyUser(ctx context.Context) (*model.User, error)
 }
 
@@ -194,6 +207,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.SignUp(childComplexity, args["input"].(model.SignUp)), true
 
+	case "NormalBlog.body":
+		if e.complexity.NormalBlog.Body == nil {
+			break
+		}
+
+		return e.complexity.NormalBlog.Body(childComplexity), true
+
+	case "NormalBlog.createdAt":
+		if e.complexity.NormalBlog.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.NormalBlog.CreatedAt(childComplexity), true
+
+	case "NormalBlog.description":
+		if e.complexity.NormalBlog.Description == nil {
+			break
+		}
+
+		return e.complexity.NormalBlog.Description(childComplexity), true
+
+	case "NormalBlog.id":
+		if e.complexity.NormalBlog.ID == nil {
+			break
+		}
+
+		return e.complexity.NormalBlog.ID(childComplexity), true
+
+	case "NormalBlog.tags":
+		if e.complexity.NormalBlog.Tags == nil {
+			break
+		}
+
+		return e.complexity.NormalBlog.Tags(childComplexity), true
+
+	case "NormalBlog.thumbnailImagePath":
+		if e.complexity.NormalBlog.ThumbnailImagePath == nil {
+			break
+		}
+
+		return e.complexity.NormalBlog.ThumbnailImagePath(childComplexity), true
+
+	case "NormalBlog.title":
+		if e.complexity.NormalBlog.Title == nil {
+			break
+		}
+
+		return e.complexity.NormalBlog.Title(childComplexity), true
+
+	case "NormalBlog.updateAt":
+		if e.complexity.NormalBlog.UpdateAt == nil {
+			break
+		}
+
+		return e.complexity.NormalBlog.UpdateAt(childComplexity), true
+
 	case "PageInfo.pageNo":
 		if e.complexity.PageInfo.PageNo == nil {
 			break
@@ -233,6 +302,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetMyUser(childComplexity), true
+
+	case "Query.normalBlog":
+		if e.complexity.Query.NormalBlog == nil {
+			break
+		}
+
+		args, err := ec.field_Query_normalBlog_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.NormalBlog(childComplexity, args["id"].(int)), true
 
 	case "Query.recommendBlogList":
 		if e.complexity.Query.RecommendBlogList == nil {
@@ -363,6 +444,17 @@ type Mutation {
   createdAt: String!
 }
 
+type NormalBlog {
+  id: ID!
+  title: String!
+  description: String!
+  body: String!
+  thumbnailImagePath: String!
+  tags: [String!]!
+  createdAt: String!
+  updateAt: String!
+}
+
 type BlogListConnection {
   pageInfo: PageInfo!
   nodes: [BlogList!]!
@@ -376,6 +468,7 @@ type RecommendBlogListConnection {
 extend type Query {
   blogList(input: PageCondition!): BlogListConnection!
   recommendBlogList: RecommendBlogListConnection!
+  normalBlog(id: Int!): NormalBlog!
 }
 `, BuiltIn: false},
 	{Name: "../../docs/graphql/schemas/page.graphql", Input: `type PageInfo {
@@ -482,6 +575,21 @@ func (ec *executionContext) field_Query_blogList_args(ctx context.Context, rawAr
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_normalBlog_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -1020,6 +1128,358 @@ func (ec *executionContext) fieldContext_Mutation_login(ctx context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _NormalBlog_id(ctx context.Context, field graphql.CollectedField, obj *model.NormalBlog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NormalBlog_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NormalBlog_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NormalBlog",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NormalBlog_title(ctx context.Context, field graphql.CollectedField, obj *model.NormalBlog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NormalBlog_title(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Title, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NormalBlog_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NormalBlog",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NormalBlog_description(ctx context.Context, field graphql.CollectedField, obj *model.NormalBlog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NormalBlog_description(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Description, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NormalBlog_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NormalBlog",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NormalBlog_body(ctx context.Context, field graphql.CollectedField, obj *model.NormalBlog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NormalBlog_body(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Body, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NormalBlog_body(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NormalBlog",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NormalBlog_thumbnailImagePath(ctx context.Context, field graphql.CollectedField, obj *model.NormalBlog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NormalBlog_thumbnailImagePath(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ThumbnailImagePath, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NormalBlog_thumbnailImagePath(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NormalBlog",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NormalBlog_tags(ctx context.Context, field graphql.CollectedField, obj *model.NormalBlog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NormalBlog_tags(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Tags, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NormalBlog_tags(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NormalBlog",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NormalBlog_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.NormalBlog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NormalBlog_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NormalBlog_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NormalBlog",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NormalBlog_updateAt(ctx context.Context, field graphql.CollectedField, obj *model.NormalBlog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NormalBlog_updateAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdateAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NormalBlog_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NormalBlog",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PageInfo_pageNo(ctx context.Context, field graphql.CollectedField, obj *model.PageInfo) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PageInfo_pageNo(ctx, field)
 	if err != nil {
@@ -1254,6 +1714,79 @@ func (ec *executionContext) fieldContext_Query_recommendBlogList(ctx context.Con
 			}
 			return nil, fmt.Errorf("no field named %q was found under type RecommendBlogListConnection", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_normalBlog(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_normalBlog(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().NormalBlog(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.NormalBlog)
+	fc.Result = res
+	return ec.marshalNNormalBlog2ᚖappᚋgraphqlᚋmodelᚐNormalBlog(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_normalBlog(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_NormalBlog_id(ctx, field)
+			case "title":
+				return ec.fieldContext_NormalBlog_title(ctx, field)
+			case "description":
+				return ec.fieldContext_NormalBlog_description(ctx, field)
+			case "body":
+				return ec.fieldContext_NormalBlog_body(ctx, field)
+			case "thumbnailImagePath":
+				return ec.fieldContext_NormalBlog_thumbnailImagePath(ctx, field)
+			case "tags":
+				return ec.fieldContext_NormalBlog_tags(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_NormalBlog_createdAt(ctx, field)
+			case "updateAt":
+				return ec.fieldContext_NormalBlog_updateAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type NormalBlog", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_normalBlog_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -3731,6 +4264,83 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
+var normalBlogImplementors = []string{"NormalBlog"}
+
+func (ec *executionContext) _NormalBlog(ctx context.Context, sel ast.SelectionSet, obj *model.NormalBlog) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, normalBlogImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("NormalBlog")
+		case "id":
+
+			out.Values[i] = ec._NormalBlog_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "title":
+
+			out.Values[i] = ec._NormalBlog_title(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "description":
+
+			out.Values[i] = ec._NormalBlog_description(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "body":
+
+			out.Values[i] = ec._NormalBlog_body(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "thumbnailImagePath":
+
+			out.Values[i] = ec._NormalBlog_thumbnailImagePath(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "tags":
+
+			out.Values[i] = ec._NormalBlog_tags(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdAt":
+
+			out.Values[i] = ec._NormalBlog_createdAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateAt":
+
+			out.Values[i] = ec._NormalBlog_updateAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var pageInfoImplementors = []string{"PageInfo"}
 
 func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *model.PageInfo) graphql.Marshaler {
@@ -3838,6 +4448,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_recommendBlogList(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "normalBlog":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_normalBlog(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -4408,6 +5041,20 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 func (ec *executionContext) unmarshalNLogin2appᚋgraphqlᚋmodelᚐLogin(ctx context.Context, v interface{}) (model.Login, error) {
 	res, err := ec.unmarshalInputLogin(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNNormalBlog2appᚋgraphqlᚋmodelᚐNormalBlog(ctx context.Context, sel ast.SelectionSet, v model.NormalBlog) graphql.Marshaler {
+	return ec._NormalBlog(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNNormalBlog2ᚖappᚋgraphqlᚋmodelᚐNormalBlog(ctx context.Context, sel ast.SelectionSet, v *model.NormalBlog) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._NormalBlog(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNPageCondition2appᚋgraphqlᚋmodelᚐPageCondition(ctx context.Context, v interface{}) (model.PageCondition, error) {

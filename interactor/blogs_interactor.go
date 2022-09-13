@@ -56,3 +56,22 @@ func (interactor *BlogsInteractor) RecommendBlogList() (recommendBlogList *model
 		Nodes: node,
 	}, nil
 }
+
+func (interactor *BlogsInteractor) NormalBlog(id int) (normalBlog *model.NormalBlog, err error) {
+	blog, err := interactor.BlogsRepo.Find(id)
+	if err != nil {
+		return nil, err
+	}
+
+	normalBlog = &model.NormalBlog{
+		ID:                 strconv.Itoa(int(blog.ID)),
+		Body:               blog.Body,
+		Title:              blog.Title,
+		ThumbnailImagePath: blog.ThumbnailImagePath,
+		Tags:               []string{"sample"},
+		CreatedAt:          blog.CreatedAt.Format("2006-01-02"),
+		UpdateAt:           blog.UpdatedAt.Format("2006-01-02"),
+	}
+
+	return normalBlog, nil
+}

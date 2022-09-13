@@ -27,3 +27,13 @@ func (r *queryResolver) RecommendBlogList(ctx context.Context) (*model.Recommend
 
 	return recommendBlogList, nil
 }
+
+// NormalBlog is the resolver for the normalBlog field.
+func (r *queryResolver) NormalBlog(ctx context.Context, id int) (*model.NormalBlog, error) {
+	normalBlog, err := r.BlogsInteractor.NormalBlog(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return normalBlog, nil
+}
