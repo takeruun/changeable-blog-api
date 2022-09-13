@@ -17,7 +17,7 @@ runs:
               {
                 "color": "good",
                 "title": "CI Result",
-                "text": "Success :white_check_mark"
+                "text": "Success :white_check_mark:"
               }
             ]
           }
