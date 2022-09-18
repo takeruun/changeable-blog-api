@@ -6,6 +6,12 @@ package resolver
 import (
 	"app/graphql/model"
 	"context"
+	"errors"
+	"fmt"
+
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/vektah/gqlparser/v2/gqlerror"
+	"gorm.io/gorm"
 )
 
 // BlogList is the resolver for the blogList field.
@@ -28,12 +34,20 @@ func (r *queryResolver) RecommendBlogList(ctx context.Context) (*model.Recommend
 	return recommendBlogList, nil
 }
 
-// NormalBlog is the resolver for the normalBlog field.
-func (r *queryResolver) NormalBlog(ctx context.Context, id int) (*model.NormalBlog, error) {
-	normalBlog, err := r.BlogsInteractor.NormalBlog(id)
-	if err != nil {
+// Blog is the resolver for the blog field.
+func (r *queryResolver) Blog(ctx context.Context, id int) (*model.Blog, error) {
+	blog, err := r.BlogsInteractor.Blog(id)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		graphql.AddError(ctx, &gqlerror.Error{
+			Path:    graphql.GetPath(ctx),
+			Message: fmt.Sprintf("Error %s", err),
+			Extensions: map[string]interface{}{
+				"code": "NOT_FOUND_ERROR",
+			},
+		})
+	} else if err != nil {
 		return nil, err
 	}
 
-	return normalBlog, nil
+	return blog, nil
 }

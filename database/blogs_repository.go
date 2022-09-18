@@ -28,7 +28,7 @@ func (repo *BlogsRepository) FindAll(params *model.PageCondition) (blogs []*enti
 func (repo *BlogsRepository) Find(id int) (blog *entity.Blog, err error) {
 	db := repo.DB.Connect()
 
-	err = db.Model(&entity.Blog{}).Find(&blog, id).Error
+	err = db.Model(&entity.Blog{}).First(&blog, id).Error
 	if err != nil {
 		return nil, err
 	}
