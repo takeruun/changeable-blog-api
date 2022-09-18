@@ -2,6 +2,19 @@
 
 package model
 
+type Blog struct {
+	ID                 string   `json:"id"`
+	Title              string   `json:"title"`
+	Description        string   `json:"description"`
+	Body               string   `json:"body"`
+	NightBody          string   `json:"nightBody"`
+	MobileBody         string   `json:"mobileBody"`
+	ThumbnailImagePath string   `json:"thumbnailImagePath"`
+	Tags               []string `json:"tags"`
+	CreatedAt          string   `json:"createdAt"`
+	UpdateAt           string   `json:"updateAt"`
+}
+
 type BlogList struct {
 	ID                 string   `json:"id"`
 	Title              string   `json:"title"`
@@ -18,17 +31,6 @@ type BlogListConnection struct {
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
-}
-
-type NormalBlog struct {
-	ID                 string   `json:"id"`
-	Title              string   `json:"title"`
-	Description        string   `json:"description"`
-	Body               string   `json:"body"`
-	ThumbnailImagePath string   `json:"thumbnailImagePath"`
-	Tags               []string `json:"tags"`
-	CreatedAt          string   `json:"createdAt"`
-	UpdateAt           string   `json:"updateAt"`
 }
 
 type PageCondition struct {
