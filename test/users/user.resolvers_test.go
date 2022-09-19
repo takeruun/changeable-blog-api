@@ -13,7 +13,7 @@ import (
 	"github.com/99designs/gqlgen/client"
 	"github.com/99designs/gqlgen/graphql/handler"
 	gomock "github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 var mockUsersRepository *MockUsersRepository
@@ -82,6 +82,6 @@ func TestSignUp(t *testing.T) {
 	`
 
 	c.MustPost(query, &resp)
-	require.Equal(t, modelUser.ID, resp.SignUp.ID)
-	require.Equal(t, modelUser.Name, resp.SignUp.Name)
+	assert.Equal(t, modelUser.ID, resp.SignUp.ID)
+	assert.Equal(t, modelUser.Name, resp.SignUp.Name)
 }
