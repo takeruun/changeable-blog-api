@@ -37,7 +37,7 @@ func (interactor *BlogsInteractor) BlogList(params *model.PageCondition) (blogLi
 }
 
 func (interactor *BlogsInteractor) RecommendBlogList() (recommendBlogList *model.RecommendBlogListConnection, err error) {
-	blogList, err := interactor.BlogsRepo.FindAll(&model.PageCondition{PageNo: 1, Limit: 3})
+	blogList, err := interactor.BlogsRepo.FindAll(&model.PageCondition{PageNo: 0, Limit: 3})
 	if err != nil {
 		return nil, err
 	}
@@ -72,6 +72,6 @@ func (interactor *BlogsInteractor) Blog(id int) (modelaBlog *model.Blog, err err
 		ThumbnailImagePath: blog.ThumbnailImagePath,
 		Tags:               []string{"sample"},
 		CreatedAt:          blog.CreatedAt.Format("2006-01-02"),
-		UpdateAt:           blog.UpdatedAt.Format("2006-01-02"),
+		UpdatedAt:          blog.UpdatedAt.Format("2006-01-02"),
 	}, nil
 }
