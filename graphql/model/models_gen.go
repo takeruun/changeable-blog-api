@@ -12,7 +12,7 @@ type Blog struct {
 	ThumbnailImagePath string   `json:"thumbnailImagePath"`
 	Tags               []string `json:"tags"`
 	CreatedAt          string   `json:"createdAt"`
-	UpdateAt           string   `json:"updateAt"`
+	UpdatedAt          string   `json:"updatedAt"`
 }
 
 type BlogList struct {

@@ -16,7 +16,7 @@ type Blog {
   thumbnailImagePath: String!
   tags: [String!]!
   createdAt: String!
-  updateAt: String!
+  updatedAt: String!
 }
 
 type BlogListConnection {

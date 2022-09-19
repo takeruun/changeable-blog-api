@@ -54,7 +54,7 @@ type ComplexityRoot struct {
 		Tags               func(childComplexity int) int
 		ThumbnailImagePath func(childComplexity int) int
 		Title              func(childComplexity int) int
-		UpdateAt           func(childComplexity int) int
+		UpdatedAt          func(childComplexity int) int
 	}
 
 	BlogList struct {
@@ -192,12 +192,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Blog.Title(childComplexity), true
 
-	case "Blog.updateAt":
-		if e.complexity.Blog.UpdateAt == nil {
+	case "Blog.updatedAt":
+		if e.complexity.Blog.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.Blog.UpdateAt(childComplexity), true
+		return e.complexity.Blog.UpdatedAt(childComplexity), true
 
 	case "BlogList.createdAt":
 		if e.complexity.BlogList.CreatedAt == nil {
@@ -470,7 +470,7 @@ type Blog {
   thumbnailImagePath: String!
   tags: [String!]!
   createdAt: String!
-  updateAt: String!
+  updatedAt: String!
 }
 
 type BlogListConnection {
@@ -1045,8 +1045,8 @@ func (ec *executionContext) fieldContext_Blog_createdAt(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Blog_updateAt(ctx context.Context, field graphql.CollectedField, obj *model.Blog) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Blog_updateAt(ctx, field)
+func (ec *executionContext) _Blog_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Blog) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Blog_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1059,7 +1059,7 @@ func (ec *executionContext) _Blog_updateAt(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1076,7 +1076,7 @@ func (ec *executionContext) _Blog_updateAt(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Blog_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Blog_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Blog",
 		Field:      field,
@@ -1881,8 +1881,8 @@ func (ec *executionContext) fieldContext_Query_blog(ctx context.Context, field g
 				return ec.fieldContext_Blog_tags(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Blog_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Blog_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Blog_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Blog", field.Name)
 		},
@@ -4302,9 +4302,9 @@ func (ec *executionContext) _Blog(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateAt":
+		case "updatedAt":
 
-			out.Values[i] = ec._Blog_updateAt(ctx, field, obj)
+			out.Values[i] = ec._Blog_updatedAt(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
