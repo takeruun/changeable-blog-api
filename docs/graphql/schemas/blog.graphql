@@ -1,0 +1,36 @@
+type BlogList {
+  id: ID!
+  title: String!
+  thumbnailImagePath: String!
+  tags: [String!]!
+  createdAt: String!
+}
+
+type Blog {
+  id: ID!
+  title: String!
+  description: String!
+  body: String!
+  nightBody: String!
+  mobileBody: String!
+  thumbnailImagePath: String!
+  tags: [String!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type BlogListConnection {
+  pageInfo: PageInfo!
+  nodes: [BlogList!]!
+}
+
+type RecommendBlogListConnection {
+  nodes: [BlogList!]!
+}
+
+
+extend type Query {
+  blogList(input: PageCondition!): BlogListConnection!
+  recommendBlogList: RecommendBlogListConnection!
+  blog(id: Int!): Blog!
+}

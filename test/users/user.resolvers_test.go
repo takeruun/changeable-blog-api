@@ -5,15 +5,15 @@ import (
 	"app/graphql/generated"
 	"app/graphql/model"
 	"app/graphql/resolver"
+	"app/interactor"
 	"app/test/mock_service"
-	"app/usecase"
 	"strconv"
 	"testing"
 
 	"github.com/99designs/gqlgen/client"
 	"github.com/99designs/gqlgen/graphql/handler"
 	gomock "github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 var mockUsersRepository *MockUsersRepository
@@ -29,13 +29,13 @@ func setUp(t *testing.T) func() {
 	mockSessionStoreService = mock_service.NewMockSessionStoreServiceRepository(ctrl)
 	mockCyptroService = mock_service.NewMockCyptoServiceRepository(ctrl)
 
-	usecase := usecase.UsersUsecase{
+	usecase := interactor.UsersInteractor{
 		UsersRepo:     mockUsersRepository,
 		SSService:     mockSessionStoreService,
 		CryptoService: mockCyptroService,
 	}
 
-	resolvers = resolver.Resolver{UsecaseUsers: usecase}
+	resolvers = resolver.Resolver{UsersInteractor: usecase}
 
 	return func() {
 		defer ctrl.Finish()
@@ -82,6 +82,6 @@ func TestSignUp(t *testing.T) {
 	`
 
 	c.MustPost(query, &resp)
-	require.Equal(t, modelUser.ID, resp.SignUp.ID)
-	require.Equal(t, modelUser.Name, resp.SignUp.Name)
+	assert.Equal(t, modelUser.ID, resp.SignUp.ID)
+	assert.Equal(t, modelUser.Name, resp.SignUp.Name)
 }
