@@ -13,3 +13,7 @@ entry-server-container:
 
 entry-db-container:
 	docker-compose exec db bash
+
+test-cover:
+	docker-compose exec graphql go test -cover ./... -coverprofile=cover.out
+	docker-compose exec graphql go tool cover -html=cover.out -o cover.html
