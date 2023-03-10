@@ -10,21 +10,21 @@ import (
 
 // SignUp is the resolver for the signUp field.
 func (r *mutationResolver) SignUp(ctx context.Context, input model.SignUp) (*model.User, error) {
-	user, err := r.UsersInteractor.SignUp(&input, ctx)
+	user, err := r.UserUsecase.SignUp(&input, ctx)
 
 	return user, err
 }
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (*model.User, error) {
-	user, err := r.UsersInteractor.Login(&input, ctx)
+	user, err := r.UserUsecase.Login(&input, ctx)
 
 	return user, err
 }
 
 // GetMyUser is the resolver for the getMyUser field.
 func (r *queryResolver) GetMyUser(ctx context.Context) (*model.User, error) {
-	user, err := r.UsersInteractor.GetMyUser(ctx)
+	user, err := r.UserUsecase.GetMyUser(ctx)
 
 	return user, err
 }
