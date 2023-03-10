@@ -1,11 +1,11 @@
 package mock_repository
 
 import (
-	entity "app/entity"
+	"app/entity"
 	"app/graphql/generated"
 	"app/graphql/model"
 	"app/graphql/resolver"
-	"app/interactor"
+	"app/usecases"
 	"fmt"
 	"strconv"
 	"testing"
@@ -28,11 +28,11 @@ func setUp(t *testing.T) func() {
 
 	mockBlogsRepository = NewMockBlogsRepository(ctrl)
 
-	interactor := interactor.BlogsInteractor{
+	usecase := usecases.BlogUsecase{
 		BlogsRepo: mockBlogsRepository,
 	}
 
-	resolvers = resolver.Resolver{BlogsInteractor: interactor}
+	resolvers = resolver.Resolver{BlogUsecase: usecase}
 
 	return func() {
 		defer ctrl.Finish()

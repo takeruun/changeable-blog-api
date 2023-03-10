@@ -6,10 +6,16 @@ runs:
     - uses: actions/setup-go@v3
       with:
         go-version: '1.18.4'
-    - uses: actions/cache@v2
+        
+    - uses: actions/cache@v3
       id: cache-go
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
+
+    - name: Install
+      if: steps.cache-go.outputs.cache-hit != 'true'
+      shell: bash
+      run: go mod tidy

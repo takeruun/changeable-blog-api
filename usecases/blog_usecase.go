@@ -6,11 +6,11 @@ import (
 	"strconv"
 )
 
-type BlogsUsecases struct {
+type BlogUsecase struct {
 	BlogsRepo repository.BlogsRepository
 }
 
-func (usecases *BlogsUsecases) BlogList(params *model.PageCondition) (blogListConnection *model.BlogListConnection, err error) {
+func (usecases *BlogUsecase) BlogList(params *model.PageCondition) (blogListConnection *model.BlogListConnection, err error) {
 	blogList, err := usecases.BlogsRepo.FindAll(params)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (usecases *BlogsUsecases) BlogList(params *model.PageCondition) (blogListCo
 	}, nil
 }
 
-func (usecases *BlogsUsecases) RecommendBlogList() (recommendBlogList *model.RecommendBlogListConnection, err error) {
+func (usecases *BlogUsecase) RecommendBlogList() (recommendBlogList *model.RecommendBlogListConnection, err error) {
 	blogList, err := usecases.BlogsRepo.FindAll(&model.PageCondition{PageNo: 0, Limit: 3})
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (usecases *BlogsUsecases) RecommendBlogList() (recommendBlogList *model.Rec
 	}, nil
 }
 
-func (usecases *BlogsUsecases) Blog(id int) (modelaBlog *model.Blog, err error) {
+func (usecases *BlogUsecase) Blog(id int) (modelBlog *model.Blog, err error) {
 	blog, err := usecases.BlogsRepo.Find(id)
 	if err != nil {
 		return nil, err

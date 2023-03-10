@@ -16,7 +16,7 @@ import (
 
 // BlogList is the resolver for the blogList field.
 func (r *queryResolver) BlogList(ctx context.Context, input model.PageCondition) (*model.BlogListConnection, error) {
-	blogListConnection, err := r.BlogsInteractor.BlogList(&input)
+	blogListConnection, err := r.BlogUsecase.BlogList(&input)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func (r *queryResolver) BlogList(ctx context.Context, input model.PageCondition)
 
 // RecommendBlogList is the resolver for the recommendBlogList field.
 func (r *queryResolver) RecommendBlogList(ctx context.Context) (*model.RecommendBlogListConnection, error) {
-	recommendBlogList, err := r.BlogsInteractor.RecommendBlogList()
+	recommendBlogList, err := r.BlogUsecase.RecommendBlogList()
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (r *queryResolver) RecommendBlogList(ctx context.Context) (*model.Recommend
 
 // Blog is the resolver for the blog field.
 func (r *queryResolver) Blog(ctx context.Context, id int) (*model.Blog, error) {
-	blog, err := r.BlogsInteractor.Blog(id)
+	blog, err := r.BlogUsecase.Blog(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		graphql.AddError(ctx, &gqlerror.Error{
 			Path:    graphql.GetPath(ctx),

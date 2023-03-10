@@ -13,18 +13,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - uses: technote-space/get-diff-action@v6
         id: check-diff
         with:
           PATTERNS: |
             **/*
             !front/**/*
-      - uses: ./.github/actions/setup-go
-        if: steps.check-diff.outputs.diff
+
       - name: Run gofmt
         run: gofmt -l -s -w .
         id: fmt-diff
         if: steps.check-diff.outputs.diff
+
       - name: Check failure
         run: exit 1
         if: steps.fmt-diff.outputs.diff
@@ -42,9 +43,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - uses: ./.github/actions/setup-go
+
       - name: Set DB
         run: mysql -uroot -ppassword -h 127.0.0.1 -e 'CREATE DATABASE `changeable-test`;'
+
       - name: Run test
         env:
           GO_MODE: test
@@ -53,8 +57,12 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_NAME: changeable
           SECRET_HASH_KEY: welkfaIEeifne212iiID
+        id: run-test
         run: |
-          go test ./test/... -test.v
+          go test ./... -test.v
+
       - uses: ./.github/actions/notify-for-slack
+        if: failure() && steps.run-test.outcome == 'failure'
         with:
+          TITLE: Backend Test
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
