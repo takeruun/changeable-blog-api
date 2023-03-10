@@ -4,6 +4,7 @@ import (
 	"app/database"
 	"app/interactor"
 	"app/service"
+	"app/usecases"
 
 	"github.com/wader/gormstore/v2"
 )
@@ -14,7 +15,8 @@ import (
 
 type Resolver struct {
 	UsersInteractor interactor.UsersInteractor
-	BlogsInteractor interactor.BlogsInteractor
+
+	BlogUsecase usecases.BlogUsecase
 }
 
 func NewResolver(db database.DB, store *gormstore.Store) *Resolver {
@@ -27,7 +29,7 @@ func NewResolver(db database.DB, store *gormstore.Store) *Resolver {
 			SSService:     sss,
 			CryptoService: cs,
 		},
-		BlogsInteractor: interactor.BlogsInteractor{
+		BlogUsecase: usecases.BlogUsecase{
 			BlogsRepo: &database.BlogsRepository{DB: db},
 		},
 	}
