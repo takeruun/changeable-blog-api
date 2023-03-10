@@ -21,9 +21,6 @@ jobs:
             **/*
             !front/**/*
 
-      - uses: ./.github/actions/setup-go
-        if: steps.check-diff.outputs.diff
-
       - name: Run gofmt
         run: gofmt -l -s -w .
         id: fmt-diff
