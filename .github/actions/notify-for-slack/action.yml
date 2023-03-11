@@ -1,0 +1,27 @@
+name: Notify for slack
+
+inputs:
+  SLACK_WEBHOOK_URL:
+    description: Slack webhook url
+  TITLE:
+    description: Message title
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Notify failuer CI
+      uses: slackapi/slack-github-action@v1.23.0
+      with:
+        payload: |
+          {
+            "attachments": [
+              {
+                "color": "danger",
+                "title": "${{ inputs.TITLE }} Result",
+                "text": "Failuer :x: \nhead commit: ${{ github.event.head_commit.url }}"
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        SLACK_WEBHOOK_URL: ${{ inputs.SLACK_WEBHOOK_URL }}
