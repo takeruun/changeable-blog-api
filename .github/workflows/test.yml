@@ -1,0 +1,42 @@
+name: TEST
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    name: Backend test
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mysql:8.0.28
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/setup-go
+
+      - name: Set DB
+        run: mysql -uroot -ppassword -h 127.0.0.1 -e 'CREATE DATABASE `changeable-test`;'
+
+      - name: Run test
+        env:
+          GO_MODE: test
+          DB_USER: root
+          DB_PASSWORD: password
+          DB_HOST: 127.0.0.1
+          DB_NAME: changeable
+          SECRET_HASH_KEY: welkfaIEeifne212iiID
+        id: run-test
+        run: |
+          go test ./... -test.v
+
+      - uses: ./.github/actions/notify-for-slack
+        if: failure() && steps.run-test.outcome == 'failure'
+        with:
+          TITLE: Backend Test
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
