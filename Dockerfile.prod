@@ -1,4 +1,4 @@
-FROM golang:1.18.4-alpine
+FROM golang:1.18.4-alpine AS builder
 WORKDIR /go/src/app
 
 RUN apk update && apk --no-cache add git
@@ -11,7 +11,7 @@ RUN go build server.go
 FROM alpine:latest
 WORKDIR /root
 
-COPY --from=build /go/src/app/ /root
+COPY --from=builder /go/src/app/ /root
 
 EXPOSE 80
 CMD ["/root/server"]
