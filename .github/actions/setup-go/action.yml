@@ -18,4 +18,4 @@ runs:
     - name: Install
       if: steps.cache-go.outputs.cache-hit != 'true'
       shell: bash
-      run: go mod tidy
+      run: go mod download

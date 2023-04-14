@@ -7,24 +7,36 @@ on:
   workflow_call:
 
 jobs:
+  check-change:
+    name: Check change code 
+    runs-on: ubuntu-latest
+    outputs:
+      check_diff: ${{ steps.set-check_diff.outputs.check_diff }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: technote-space/get-diff-action@v6
+        id: check-diff
+        with:
+          PATTERNS: |
+            **/*
+      - name: Set check_diff
+        if: steps.check-diff.outputs.diff
+        id: set-check_diff
+        run: echo "check_diff=1" >> $GITHUB_OUTPUT
+
   go-fmt:
+    needs: [check-change]
+    if: needs.check-change.outputs.check_diff == '1'
     name: Go format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: technote-space/get-diff-action@v6
-        id: check-diff
-        with:
-          PATTERNS: |
-            **/*
-            !front/**/*
-
       - name: Run gofmt
         run: gofmt -l -s -w .
         id: fmt-diff
-        if: steps.check-diff.outputs.diff
 
       - name: Check failure
         run: exit 1
